@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Transactional
+@CrossOrigin
 public class OrarResource {
 
     private CursRepository cursRepository;
@@ -29,7 +30,7 @@ public class OrarResource {
                 .map(Curs::getMaterie)
                 .collect(Collectors.joining(", "));
 
-        return String.format("Your schedule for %s is %s", dayOfWeek, orar);
+        return String.format("Your time table for %s is %s", dayOfWeek, orar);
     }
 
     @PostMapping("/orar/{student}")
