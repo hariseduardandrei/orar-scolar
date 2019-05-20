@@ -8,6 +8,8 @@ import ro.eduardharis.orarscolar.entities.Curs;
 import ro.eduardharis.orarscolar.repositories.CursRepository;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,8 +24,13 @@ public class OrarResource {
         this.cursRepository = cursRepository;
     }
 
-    @GetMapping("/orar/{student}/{dayOfWeek}")
-    public String getOrar(@PathVariable("student") String student, @PathVariable("dayOfWeek") String dayOfWeek) {
+    @GetMapping("/orar/daysOfWeek")
+    public List<String> getDaysOfWeek() {
+        return Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
+    }
+
+    @GetMapping("/orar/text/{student}/{dayOfWeek}")
+    public String getOrarText(@PathVariable("student") String student, @PathVariable("dayOfWeek") String dayOfWeek) {
 
         String orar = cursRepository.findAllByDayOfWeekAndStudent(dayOfWeek, student)
                 .stream()
@@ -31,6 +38,14 @@ public class OrarResource {
                 .collect(Collectors.joining(", "));
 
         return String.format("Your time table for %s is %s", dayOfWeek, orar);
+    }
+
+    @GetMapping("/orar/{student}/{dayOfWeek}")
+    public List<String> getOrar(@PathVariable("student") String student, @PathVariable("dayOfWeek") String dayOfWeek) {
+        return cursRepository.findAllByDayOfWeekAndStudent(dayOfWeek, student)
+                .stream()
+                .map(Curs::getMaterie)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/orar/{student}")
